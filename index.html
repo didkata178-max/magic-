@@ -154,6 +154,10 @@
             </div>
             
             <button class="btn-magic" style="height: 40px; font-size: 0.7rem;" onclick="shareApp()">Сподели Светлина</button>
+            <div style="display: flex; gap: 10px;">
+    <button class="btn-magic" style="height: 40px; font-size: 0.7rem; flex: 1;" onclick="shareApp()">Сподели Светлина</button>
+    <button class="btn-magic" style="height: 40px; font-size: 0.7rem; flex: 1;" onclick="giftLight()">Подари Светлина</button>
+</div>
         </div>
     </div>
 
@@ -265,6 +269,29 @@
         }
 
         function logout() { localStorage.clear(); location.reload(); }
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '365 Дни Светлина',
+                    text: 'Виж моята магическа афирмация за днес! ✨',
+                    url: window.location.href
+                }).catch((err) => console.log('Грешка:', err));
+            } else {
+                alert("Опция за споделяне не е налична. Копирай линка ръчно! 😊");
+            }
+        }
+
+        function giftLight() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Подарък Светлина',
+                    text: 'Изпращам ти малко светлина и вълшебство! ✨',
+                    url: window.location.href
+                }).catch((err) => console.log('Грешка:', err));
+            } else {
+                alert("Копирай линка и го подари на любим човек! 😊");
+            }
+        }
 
         window.onload = function() {
             const n = localStorage.getItem('magicName');
@@ -273,4 +300,5 @@
         }
     </script>
 </body>
+
 </html>
