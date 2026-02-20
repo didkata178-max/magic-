@@ -42,13 +42,12 @@
             display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);
         }
 
-        /* КАРТА С ФИКСИРАН РАЗМЕР */
         .magic-card {
             background: var(--card-bg); 
             border: 2px solid var(--accent); 
             border-radius: 40px;
             padding: 25px; text-align: center; width: 90%; max-width: 360px; 
-            min-height: 580px; /* Гарантира еднакъв размер */
+            min-height: 580px;
             display: flex; flex-direction: column; justify-content: space-between;
             box-shadow: var(--shadow);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -57,20 +56,17 @@
 
         .mystic-title { font-family: 'Georgia', serif; font-style: italic; font-size: 1.7rem; color: var(--accent); margin-bottom: 15px; }
 
-        /* ВХОДНИ ЕЛЕМЕНТИ */
         input[type="text"], select, .btn-magic {
             width: 100%; height: 50px; border-radius: 25px; font-size: 16px;
             box-sizing: border-box; margin-bottom: 12px; display: block; outline: none;
         }
         input[type="text"], select { border: 1px solid var(--accent); background: rgba(255,255,255,0.05); color: white; text-align: center; }
-        select { text-align-last: center; }
-
+        
         .btn-magic {
             background: var(--accent); color: #000; border: none; font-weight: 800;
             text-transform: uppercase; cursor: pointer; transition: 0.3s;
         }
 
-        /* СТИЛИЗИРАНИ ЗОНИ В КАРТАТА */
         .affirmation-box { 
             min-height: 90px; display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.03); border: 1px dashed var(--accent); 
@@ -89,10 +85,12 @@
 
         .mood-icons { display: flex; justify-content: space-around; font-size: 2rem; margin: 10px 0; }
         .mood-icons span { cursor: pointer; transition: 0.2s; }
-        .mood-icons span:active { transform: scale(1.3); }
 
         .archive-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; min-height: 30px; }
         .archive-item { font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 10px; border: 0.5px solid var(--accent); }
+        
+        .button-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-small { height: 40px !important; font-size: 0.7rem !important; flex: 1; margin-bottom: 0 !important; }
     </style>
 </head>
 <body>
@@ -153,11 +151,10 @@
                 <div id="moodArchive" class="archive-grid"></div>
             </div>
             
-            <button class="btn-magic" style="height: 40px; font-size: 0.7rem;" onclick="shareApp()">Сподели Светлина</button>
-            <div style="display: flex; gap: 10px;">
-    <button class="btn-magic" style="height: 40px; font-size: 0.7rem; flex: 1;" onclick="shareApp()">Сподели Светлина</button>
-    <button class="btn-magic" style="height: 40px; font-size: 0.7rem; flex: 1;" onclick="giftLight()">Подари Светлина</button>
-</div>
+            <div class="button-group">
+                <button class="btn-magic btn-small" onclick="shareApp()">Сподели</button>
+                <button class="btn-magic btn-small" onclick="giftLight()">Подари</button>
+            </div>
         </div>
     </div>
 
@@ -203,7 +200,9 @@
         function toggleTheme() {
             document.body.classList.toggle('night-mode');
             const isNight = document.body.classList.contains('night-mode');
-            updateCard(localStorage.getItem('magicName'), localStorage.getItem('magicZodiac'), isNight);
+            const n = localStorage.getItem('magicName');
+            const z = localStorage.getItem('magicZodiac');
+            updateCard(n, z, isNight);
             if (isPlaying) {
                 document.getElementById('dayAudio').pause(); document.getElementById('nightAudio').pause();
                 if (isNight) document.getElementById('nightAudio').play(); else document.getElementById('dayAudio').play();
@@ -217,7 +216,7 @@
             const hList = isNight ? nightHoro[element] : dayHoro[element];
             document.getElementById('horoscopeText').innerText = hList[day % hList.length];
             document.getElementById('challText').innerHTML = isNight ? "🌙 РЕЛАКС: Затвори очи и дишай дълбоко за 2 минути." : "🎯 МИСИЯ: Направи комплимент на някого днес.";
-            document.getElementById('affirmText').innerText = affirmations[day - 1];
+            document.getElementById('affirmText').innerText = affirmations[(day - 1) % affirmations.length];
             document.getElementById('personalBonus').innerText = tips[name.length % tips.length];
         }
 
@@ -252,6 +251,30 @@
             }
         }
 
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '365 Дни Светлина',
+                    text: 'Виж моята афирмация за днес! ✨',
+                    url: window.location.href
+                }).catch(err => console.log(err));
+            } else {
+                alert("Копирай линка: " + window.location.href);
+            }
+        }
+
+        function giftLight() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Подарък Светлина',
+                    text: 'Изпращам ти малко магия! ✨',
+                    url: window.location.href
+                }).catch(err => console.log(err));
+            } else {
+                alert("Изпрати линка на приятел: " + window.location.href);
+            }
+        }
+
         function logMood(e) {
             let c = JSON.parse(localStorage.getItem('moodCounts')) || {};
             c[e] = (c[e] || 0) + 1;
@@ -269,29 +292,6 @@
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-        function shareApp() {
-            if (navigator.share) {
-                navigator.share({
-                    title: '365 Дни Светлина',
-                    text: 'Виж моята магическа афирмация за днес! ✨',
-                    url: window.location.href
-                }).catch((err) => console.log('Грешка:', err));
-            } else {
-                alert("Опция за споделяне не е налична. Копирай линка ръчно! 😊");
-            }
-        }
-
-        function giftLight() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Подарък Светлина',
-                    text: 'Изпращам ти малко светлина и вълшебство! ✨',
-                    url: window.location.href
-                }).catch((err) => console.log('Грешка:', err));
-            } else {
-                alert("Копирай линка и го подари на любим човек! 😊");
-            }
-        }
 
         window.onload = function() {
             const n = localStorage.getItem('magicName');
@@ -300,5 +300,10 @@
         }
     </script>
 </body>
-
 </html>
+
+          
+
+
+    
+      
