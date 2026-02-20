@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>365 Дни Светлина - Магия</title>
+    
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#051a1d">
+
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at center, #1a4a4e 0%, #051a1d 100%);
+            --card-bg: rgba(13, 59, 63, 0.98);
+            --accent: #d4af37;
+            --text: #f8f9fa;
+            --shadow: 0 15px 45px rgba(0,0,0,0.5);
+        }
+
+        .night-mode {
+            --bg-gradient: radial-gradient(circle at center, #2e1a47 0%, #0f051d 100%);
+            --card-bg: rgba(26, 13, 45, 0.98);
+            --accent: #a29bfe;
+            --text: #dcdde1;
+            --shadow: 0 10px 50px rgba(0,0,0,0.8);
+        }
+
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            background: var(--bg-gradient);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text);
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.8s ease; overflow: hidden;
+        }
+
+        .top-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 12px; z-index: 100; }
+        .icon-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid var(--accent); color: var(--accent);
+            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+
+        /* КАРТА С ФИКСИРАН РАЗМЕР */
+        .magic-card {
+            background: var(--card-bg); 
+            border: 2px solid var(--accent); 
+            border-radius: 40px;
+            padding: 25px; text-align: center; width: 90%; max-width: 360px; 
+            min-height: 580px; /* Гарантира еднакъв размер */
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: var(--shadow);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box; position: relative;
+        }
+
+        .mystic-title { font-family: 'Georgia', serif; font-style: italic; font-size: 1.7rem; color: var(--accent); margin-bottom: 15px; }
+
+        /* ВХОДНИ ЕЛЕМЕНТИ */
+        input[type="text"], select, .btn-magic {
+            width: 100%; height: 50px; border-radius: 25px; font-size: 16px;
+            box-sizing: border-box; margin-bottom: 12px; display: block; outline: none;
+        }
+        input[type="text"], select { border: 1px solid var(--accent); background: rgba(255,255,255,0.05); color: white; text-align: center; }
+        select { text-align-last: center; }
+
+        .btn-magic {
+            background: var(--accent); color: #000; border: none; font-weight: 800;
+            text-transform: uppercase; cursor: pointer; transition: 0.3s;
+        }
+
+        /* СТИЛИЗИРАНИ ЗОНИ В КАРТАТА */
+        .affirmation-box { 
+            min-height: 90px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.03); border: 1px dashed var(--accent); 
+            padding: 15px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .info-section { 
+            min-height: 110px; text-align: left; font-size: 0.85rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;
+        }
+        .challenge-box { 
+            min-height: 60px; display: flex; align-items: center; justify-content: center;
+            background: var(--text); color: #111; padding: 12px; border-radius: 18px; 
+            font-weight: bold; font-size: 0.9rem; margin: 10px 0;
+        }
+        .night-mode .challenge-box { background: #a29bfe; color: #1a0d2d; }
+
+        .mood-icons { display: flex; justify-content: space-around; font-size: 2rem; margin: 10px 0; }
+        .mood-icons span { cursor: pointer; transition: 0.2s; }
+        .mood-icons span:active { transform: scale(1.3); }
+
+        .archive-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; min-height: 30px; }
+        .archive-item { font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 10px; border: 0.5px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-page" style="text-align: center; width: 90%; max-width: 360px;">
+        <span id="season-icon" style="font-size: 3.5rem; display: block; margin-bottom: 10px;">✨</span>
+        <div class="mystic-title">Дневник на Светлината</div>
+        <input type="text" id="userNameInput" placeholder="Твоето име...">
+        <select id="userZodiac">
+            <option value="" disabled selected>Избери своята зодия</option>
+            <optgroup label="🔥 ОГЪН" style="background:#4a1a1a;">
+                <option value="Овен">Овен ♈</option><option value="Лъв">Лъв ♌</option><option value="Стрелец">Стрелец ♐</option>
+            </optgroup>
+            <optgroup label="🌿 ЗЕМЯ" style="background:#1a4a1a;">
+                <option value="Телец">Телец ♉</option><option value="Дева">Дева ♍</option><option value="Козирог">Козирог ♑</option>
+            </optgroup>
+            <optgroup label="🌬️ ВЪЗДУХ" style="background:#1a3a4a;">
+                <option value="Близнаци">Близнаци ♊</option><option value="Везни">Везни ♎</option><option value="Водолей">Водолей ♒</option>
+            </optgroup>
+            <optgroup label="💧 ВОДА" style="background:#2a1a4a;">
+                <option value="Рак">Рак ♋</option><option value="Скорпион">Скорпион ♏</option><option value="Риби">Риби ♓</option>
+            </optgroup>
+        </select>
+        <button class="btn-magic" onclick="startApp()">Влез в магията</button>
+    </div>
+
+    <div id="card-page" style="display:none; width: 100%; flex-direction: column; align-items: center;">
+        <div class="top-controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" id="audioToggle" onclick="toggleAudio()">🔇</button>
+            <button class="icon-btn" onclick="logout()">👤</button>
+        </div>
+
+        <div class="magic-card">
+            <div>
+                <h2 id="greeting" style="color: var(--accent); margin: 0; font-family: Georgia, serif; font-size: 1.4rem;"></h2>
+                <div id="zodiacDisplay" style="color: var(--accent); font-size: 0.8rem; letter-spacing: 2px;"></div>
+                <div id="displayDate" style="font-size: 1rem; opacity: 0.6; margin: 5px 0;"></div>
+            </div>
+
+            <div class="affirmation-box">
+                <p id="affirmText" style="font-style: italic; margin: 0; font-size: 1.05rem; line-height: 1.3;"></p>
+            </div>
+
+            <div class="info-section">
+                <small id="horoscopeLabel" style="color: var(--accent); font-weight: bold; text-transform: uppercase; font-size: 0.7rem;"></small>
+                <p id="horoscopeText" style="margin: 5px 0; line-height: 1.4;"></p>
+                <small id="personalBonus" style="color: var(--accent); font-style: italic; font-size: 0.75rem;"></small>
+            </div>
+
+            <div class="challenge-box" id="challText"></div>
+
+            <div>
+                <div class="mood-icons">
+                    <span onclick="logMood('🌟')">🌟</span><span onclick="logMood('😊')">😊</span>
+                    <span onclick="logMood('😐')">😐</span><span onclick="logMood('😔')">😔</span>
+                </div>
+                <div id="moodArchive" class="archive-grid"></div>
+            </div>
+            
+            <button class="btn-magic" style="height: 40px; font-size: 0.7rem;" onclick="shareApp()">Сподели Светлина</button>
+        </div>
+    </div>
+
+    <audio id="dayAudio" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+    <audio id="nightAudio" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+
+    <script>
+        let isPlaying = false;
+        const affirmations = [
+            "Днес отварям сърцето си за чудеса.", "Моята вътрешна светлина е непобедима.", "Аз съм магнит за добри новини.", "Избирам да виждам красотата в детайлите.",
+            "Вселената ме подкрепя безусловно.", "Аз създавам своето щастие тук и сега.", "Днес пускам старото и приемам новото.", "Всяко мое вдишване ми носи мир.",
+            "Аз заслужавам най-доброто.", "Магията е вътре в мен.", "Моите мечти имат крила.", "Аз съм в синхрон с живота.",
+            "Търпението ми носи яснота.", "Днес моят глас е чут.", "Аз излъчвам любов и доброта.", "Моето тяло е храм на здравето.",
+            "Доверявам се на интуицията си.", "Аз съм достатъчна и силна.", "Пътят пред мен е светъл.", "Всяко предизвикателство е урок.",
+            "Избирам радостта пред страха.", "Изобилието тече към мен.", "Аз създавам мир около себе си.", "Днес е перфектен ден за начало.",
+            "Моята енергия вдъхновява.", "Аз контролирам мислите си.", "Вселената ме изненадва приятно.", "Миналото е урок, днес е подарък.",
+            "Аз съм смела и готова.", "Благодарността отваря нови врати.", "Днес празнувам магията да бъда себе си."
+        ];
+
+        const dayHoro = { 
+            fire: ["Днес енергията ти е заразителна! Действай!", "Време е за лидерски решения."],
+            earth: ["Стабилността днес е твой съюзник. Планирай.", "Фокусирай се върху реални резултати."],
+            air: ["Нова идея ще промени деня ти. Сподели я.", "Общуването ти носи неочакван късмет."],
+            water: ["Интуицията ти е безпогрешна. Последвай я.", "Ден за творчество и вдъхновение."]
+        };
+
+        const nightHoro = { 
+            fire: ["Успокой огъня. Време е за размисъл.", "Нощта ти носи заслужен покой."],
+            earth: ["Тялото ти иска почивка. Благодари му.", "Заземи се и пусни напрежението."],
+            air: ["Изчисти ума си от излишни думи. Тишина.", "Сънувай нови хоризонти."],
+            water: ["Потопи се в тишината. Всичко е наред.", "Емоциите ти се пречистват в съня."]
+        };
+
+        const tips = ["Късметът е в числото 7.", "Синият цвят ти дава сила.", "Потърси знак в песен.", "11:11 е твоят час.", "Мирът започва от теб."];
+
+        function getElement(z) {
+            if (["Овен", "Лъв", "Стрелец"].includes(z)) return "fire";
+            if (["Телец", "Дева", "Козирог"].includes(z)) return "earth";
+            if (["Близнаци", "Везни", "Водолей"].includes(z)) return "air";
+            return "water";
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('night-mode');
+            const isNight = document.body.classList.contains('night-mode');
+            updateCard(localStorage.getItem('magicName'), localStorage.getItem('magicZodiac'), isNight);
+            if (isPlaying) {
+                document.getElementById('dayAudio').pause(); document.getElementById('nightAudio').pause();
+                if (isNight) document.getElementById('nightAudio').play(); else document.getElementById('dayAudio').play();
+            }
+        }
+
+        function updateCard(name, zodiac, isNight) {
+            const day = new Date().getDate();
+            const element = getElement(zodiac);
+            document.getElementById('horoscopeLabel').innerText = isNight ? "🌙 Нощен Покой" : "☀️ Дневна Енергия";
+            const hList = isNight ? nightHoro[element] : dayHoro[element];
+            document.getElementById('horoscopeText').innerText = hList[day % hList.length];
+            document.getElementById('challText').innerHTML = isNight ? "🌙 РЕЛАКС: Затвори очи и дишай дълбоко за 2 минути." : "🎯 МИСИЯ: Направи комплимент на някого днес.";
+            document.getElementById('affirmText').innerText = affirmations[day - 1];
+            document.getElementById('personalBonus').innerText = tips[name.length % tips.length];
+        }
+
+        function startApp() {
+            const n = document.getElementById('userNameInput').value;
+            const z = document.getElementById('userZodiac').value;
+            if (!n || !z) return alert("Вселената те очаква ✨");
+            localStorage.setItem('magicName', n);
+            localStorage.setItem('magicZodiac', z);
+            loadPage(n, z);
+        }
+
+        function loadPage(n, z) {
+            document.getElementById('welcome-page').style.display = 'none';
+            document.getElementById('card-page').style.display = 'flex';
+            document.getElementById('greeting').innerText = `Здравей, ${n}`;
+            document.getElementById('zodiacDisplay').innerText = z.toUpperCase();
+            document.getElementById('displayDate').innerText = new Date().toLocaleDateString('bg-BG', { day: 'numeric', month: 'long' });
+            updateCard(n, z, document.body.classList.contains('night-mode'));
+            updateArchive();
+        }
+
+        function toggleAudio() {
+            const btn = document.getElementById('audioToggle');
+            const isNight = document.body.classList.contains('night-mode');
+            if (!isPlaying) {
+                if (isNight) document.getElementById('nightAudio').play(); else document.getElementById('dayAudio').play();
+                btn.innerText = "🔊"; isPlaying = true;
+            } else {
+                document.getElementById('dayAudio').pause(); document.getElementById('nightAudio').pause();
+                btn.innerText = "🔇"; isPlaying = false;
+            }
+        }
+
+        function logMood(e) {
+            let c = JSON.parse(localStorage.getItem('moodCounts')) || {};
+            c[e] = (c[e] || 0) + 1;
+            localStorage.setItem('moodCounts', JSON.stringify(c));
+            updateArchive();
+        }
+
+        function updateArchive() {
+            const a = document.getElementById('moodArchive');
+            const c = JSON.parse(localStorage.getItem('moodCounts')) || {};
+            a.innerHTML = '';
+            for (const [e, count] of Object.entries(c)) {
+                a.innerHTML += `<div class="archive-item">${e} x${count}</div>`;
+            }
+        }
+
+        function logout() { localStorage.clear(); location.reload(); }
+
+        window.onload = function() {
+            const n = localStorage.getItem('magicName');
+            const z = localStorage.getItem('magicZodiac');
+            if (n) loadPage(n, z);
+        }
+    </script>
+</body>
+</html>
