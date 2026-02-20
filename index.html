@@ -252,12 +252,11 @@
                 btn.innerText = "🔇"; isPlaying = false;
             }
         }
-
-        function shareApp() {
+function shareApp() {
             if (navigator.share) {
                 navigator.share({
                     title: '365 Дни Светлина',
-                    text: 'Виж моята афирмация за днес! ✨',
+                    text: 'Виж твоята магия за днес! ✨', // Тук променихме текста
                     url: window.location.href
                 }).catch(err => console.log(err));
             } else {
@@ -265,11 +264,11 @@
             }
         }
 
-        function giftLight() {
+       function giftLight() {
             if (navigator.share) {
                 navigator.share({
                     title: 'Подарък Светлина',
-                    text: 'Изпращам ти малко магия! ✨',
+                    text: 'Изпращам ти малко магия! Виж твоята за днес тук: ✨', // И тук
                     url: window.location.href
                 }).catch(err => console.log(err));
             } else {
@@ -309,4 +308,5 @@
 
     
       
+
 
